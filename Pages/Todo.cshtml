@@ -1,0 +1,29 @@
+@page "/todo"
+
+<h1>Todo</h1>
+
+
+<button class="btn btn-primary" onclick="@Add">Add</button>
+@foreach (var t in todos)
+{
+    <tr>
+        <td>@t.Title</td>
+    </tr>
+}
+
+@functions {
+    List<TodoItem> todos;
+
+    protected override void OnInit()
+    {
+        todos = new List<TodoItem>();
+    }
+
+    void Add() {
+        todos.Add(new TodoItem {Title = "hello " + todos.Count});
+    }
+
+    class TodoItem {
+        public string Title {get;set;}
+    }
+}
