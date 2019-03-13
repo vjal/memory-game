@@ -136,9 +136,7 @@ app {
     text-align: center;
     align-content: center;
     margin: auto;
-    /* width: 200px; */
-    /* height: 200px; */
-    border: 1px solid #3a0647;
+    border: 4px solid #d6d5d5;
     background-position: center;
     display: inline-block;
     transition: transform 0.5s ease;
@@ -154,7 +152,6 @@ app {
 }
 .card.flipped{
     transform: rotateY(180deg) scale(.8);
-
 }
 
 .card-front, .card-back {
@@ -167,12 +164,12 @@ app {
 
 }
 .card-back {
-    background-color: dodgerblue;
+    background-color: indianred;
     color: white;
     transform: rotateY(180deg);
   }
 .found {
-    border: 4px solid green;
+    border: 4px solid lawngreen;
     transform: rotateY(360deg) scale(1);
 }
 
