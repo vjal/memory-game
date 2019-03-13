@@ -15,8 +15,12 @@
 
 @if(game.State == MemoryGameState.Win)
 {
-    <h1>You win!</h1>
-<button class="btn btn-primary" onclick="@Start">Play again!</button>
+    <div class="caption">
+    <span style="vertical-align:center">
+        <h1>You win!</h1>
+        <button class="btn btn-success btn-lg " onclick="@Start">Play again!</button>
+        </span>
+    </div>
 }
 
 </div>
