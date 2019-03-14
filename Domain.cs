@@ -4,22 +4,20 @@ using System;
 
 namespace Domain 
 {
-
     public class MemoryGame 
     {
         List<Card> cards;
         Card firstGuess;
         Card secondGuess;
-        Action onWin;
+        public event EventHandler OnWin;
 
-        public MemoryGame(List<Card> cards, Action onWin)
+        public MemoryGame(List<Card> cards)
         {
             this.cards = cards;
-            this.onWin = onWin;
         }
 
         public GameState State { get; private set; }
-        
+
         public void Guess(Card card) 
         {
             if(State == GameState.GuessFirst && card.State == CardState.Hidden) 
@@ -58,7 +56,7 @@ namespace Domain
             if (cards.All(c => c.IsFound))
             {
                 State = GameState.Win;
-                onWin();
+                OnWin(this, new EventArgs());
             }
         }
     }
@@ -75,6 +73,11 @@ namespace Domain
     {
         public string Url { get; set; }
         public CardState State{ get;set; } = CardState.Hidden;
+
+        public Card(string url)
+        {
+            Url = url;
+        }
 
         public void Clicked()  
         {

@@ -128,28 +128,30 @@ app {
     text-align: center;
     perspective: 1000px;
     height: 700px;
+    margin-top: 50px;
 }
 
 .card {
     width: 23%; 
+    margin: 0%;
     text-align: center;
     align-content: center;
     margin: auto;
     background-position: center;
     display: inline-block;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);
     transform-style: preserve-3d;
-    transform: scale(.9);
+    transform: scale(1);
     border: 0;
 }
 
 
-.card:after{
+.card:after {
     content:"";
     display: block;
     padding-bottom: 100%
 }
-.card.flipped{
+.card.flipped {
     transform: rotateY(180deg) scale(.8);
 }
 
@@ -160,20 +162,23 @@ app {
     backface-visibility: hidden;
     background-size: cover; 
     background-position: center;
-
 }
+
 .card-back {
-    background-color:#007bff!important;
+    background-color:#007bff;
     transform: rotateY(180deg);
     border: 0px;
 }
 
 .found {
-    border: 4px solid #28a745;
-    transform: rotateY(360deg) scale(1);
+    transform: rotateY(0) scale(1);
 }
 
-.caption{
+.found .card-front {
+    border: 4px solid #28a745;
+}
+
+.caption {
     position: relative;
     top: 0;
     left: 0;

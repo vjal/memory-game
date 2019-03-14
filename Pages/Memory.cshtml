@@ -30,33 +30,31 @@
 
     SearchResponse searchResponse = new SearchResponse();
     List<Card> cards= new List<Card>();
-    MemoryGame game = new MemoryGame(new List<Card>(), () => offset += 8);
-    static int offset = 0;
+    MemoryGame game = new MemoryGame(new List<Card>());
+    int offset = 0;
     protected override async Task OnInitAsync()
     {
         await Start();
     }
 
-    public async Task Start(){
-
+    public async Task Start()
+    {
         var search = Keyword;
-        if(string.IsNullOrEmpty(search))
-            search = "cats";
 
-        searchResponse = await Http.GetJsonAsync<SearchResponse>($"http://api.giphy.com/v1/gifs/search?q={search}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}");
+        //var url = $"http://api.giphy.com/v1/gifs/search?q={search}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}";
+        var url = string.IsNullOrEmpty(search) 
+            ? $"http://api.giphy.com/v1/gifs/trending?api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}"
+            : $"http://api.giphy.com/v1/gifs/search?q={search}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}";
+        searchResponse = await Http.GetJsonAsync<SearchResponse>(url);
         cards.Clear();
-        foreach(var gif in searchResponse.data){
-            cards.Add(new Card {
-                Url = gif.Image
-                
-            });
-            cards.Add(new Card {
-            Url = gif.Image
-                
-            });
+        foreach(var gif in searchResponse.data)
+        {
+            cards.Add(new Card(gif.Image));
+            cards.Add(new Card(gif.Image));
         }
         Shuffle(cards);
-        game = new MemoryGame(cards, () => offset += 8);
+        game = new MemoryGame(cards);
+        game.OnWin += (sender, ea) => offset +=8;
     }
 
     public void OnClick(Card card) {
