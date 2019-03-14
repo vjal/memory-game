@@ -132,7 +132,6 @@ app {
 
 .card {
     width: 23%; 
-    
     text-align: center;
     align-content: center;
     margin: auto;
@@ -141,6 +140,7 @@ app {
     transition: transform 0.5s ease;
     transform-style: preserve-3d;
     transform: scale(.9);
+    border: 0;
 }
 
 
@@ -163,11 +163,9 @@ app {
 
 }
 .card-back {
-    background-color: darkslategray;
+    background-color:#007bff!important;
     transform: rotateY(180deg);
-
-  
-
+    border: 0px;
 }
 
 .found {

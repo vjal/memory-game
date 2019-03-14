@@ -3,7 +3,6 @@
 @inject HttpClient Http
 @using Domain
 
-
 <div class="card-container container"> 
 @foreach (var card in cards)
 {
@@ -13,7 +12,7 @@
     </div>
 }
 
-@if(game.State == MemoryGameState.Win)
+@if(game.State == GameState.Win)
 {
     <div class="caption">
     <span style="vertical-align:center">
@@ -39,12 +38,13 @@
     }
 
     public async Task Start(){
-        cards.Clear();
+
         var search = Keyword;
         if(string.IsNullOrEmpty(search))
             search = "cats";
 
         searchResponse = await Http.GetJsonAsync<SearchResponse>($"http://api.giphy.com/v1/gifs/search?q={search}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}");
+        cards.Clear();
         foreach(var gif in searchResponse.data){
             cards.Add(new Card {
                 Url = gif.Image
@@ -92,7 +92,4 @@
     public class Image {
         public string Url {get;set;}
     }
-
-
-
 }
