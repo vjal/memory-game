@@ -166,10 +166,7 @@ app {
     background-color: darkslategray;
     transform: rotateY(180deg);
 
-  }
-
-  .card:hover{
-    border: 4px solid yellow;
+  
 
 }
 
