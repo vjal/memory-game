@@ -16,6 +16,7 @@
 </div>
 
 @functions {
+    
     [Parameter]
     protected string Keyword {get;set;}
 
@@ -23,6 +24,7 @@
     List<Card> cards= new List<Card>();
     MemoryGame game = new MemoryGame(new List<Card>());
     int offset = 0;
+
     protected override async Task OnInitAsync()
     {
         await Start();
@@ -32,7 +34,6 @@
     {
         var search = Keyword;
 
-        //var url = $"http://api.giphy.com/v1/gifs/search?q={search}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}";
         var url = string.IsNullOrEmpty(search) 
             ? $"http://api.giphy.com/v1/gifs/trending?api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}"
             : $"http://api.giphy.com/v1/gifs/search?q={search}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}";
@@ -46,10 +47,9 @@
         Shuffle(cards);
         game = new MemoryGame(cards);
         game.OnWin += async (sender, ea) => {
-            offset +=8;
+            offset += 8;
             await Start();
         };
-            
     }
 
     public void OnClick(Card card) 
