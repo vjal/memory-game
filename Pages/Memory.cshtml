@@ -6,21 +6,12 @@
 <div class="card-container container"> 
 @foreach (var card in cards)
 {
-    <div class="card @(!card.IsFlipped ? "flipped" : "") @(card.IsFound ? "found" : "")" onclick="@{() => OnClick(card)}">
+    <div class="card @(!card.IsRevealed ? "flipped" : "") @(card.IsFound ? "found" : "")" onclick="@{() => OnClick(card)}">
         <div class="card-front" style="background-image: url(@card.Url)"></div>
         <div class="card-back"></div>
     </div>
 }
 
-@if(game.State == GameState.Win)
-{
-    <div class="caption">
-    <span style="vertical-align:center">
-        <h1>Voitit!</h1>
-        <button class="btn btn-success btn-lg " onclick="@Start">Uusi peli!</button>
-        </span>
-    </div>
-}
 
 </div>
 
@@ -54,10 +45,15 @@
         }
         Shuffle(cards);
         game = new MemoryGame(cards);
-        game.OnWin += (sender, ea) => offset +=8;
+        game.OnWin += async (sender, ea) => {
+            offset +=8;
+            await Start();
+        };
+            
     }
 
-    public void OnClick(Card card) {
+    public void OnClick(Card card) 
+    {
         game.Guess(card);
     }
 
