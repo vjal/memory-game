@@ -24,7 +24,7 @@ namespace Domain
 
         public void Start()
         {
-            Cards = new List<Card>();
+            Cards.Clear();
             var deck = Deck.ToList();
             for (var i = 0; i < 8; i++)
             {
@@ -58,6 +58,7 @@ namespace Domain
             if (State == GameState.Win)
             {
                 Start();
+                return;
             }
 
             if (State == GameState.GuessFirst && card.State == CardState.Hidden)
@@ -83,10 +84,12 @@ namespace Domain
                         return;
                     }
 
+
                     State = GameState.GuessFirst;
                     return;
                 }
-
+                firstGuess.State = CardState.Wrong;
+                secondGuess.State = CardState.Wrong;
                 State = GameState.Continue;
                 return;
             }
@@ -122,7 +125,7 @@ namespace Domain
             Url = url;
         }
 
-        public bool IsRevealed => State == CardState.Open || State == CardState.Found;
+        public bool IsRevealed => State == CardState.Open || State == CardState.Found || State == CardState.Wrong;
         public bool IsFound => State == CardState.Found;
         public Card Copy() => new Card(Url);
     }
@@ -133,6 +136,7 @@ namespace Domain
     {
         Hidden,
         Open,
+        Wrong,
         Found
     }
 }

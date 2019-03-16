@@ -129,6 +129,8 @@ app {
     perspective: 1000px;
     height: 700px;
     margin-top: 50px;
+    line-height: normal;
+    max-width: 1200px;
 }
 
 .card {
@@ -146,12 +148,14 @@ app {
 }
 
 
+
 .card:after {
     content:"";
     display: block;
     padding-bottom: 100%
 }
 .card.flipped {
+    transition: transform 0.5s ease;
     transform: rotateY(180deg) scale(.8);
 }
 
@@ -170,12 +174,17 @@ app {
     border: 0px;
 }
 
-.found {
+.found, .wrong {
+    transition: transform 0.5s ease;
     transform: rotateY(0) scale(1);
 }
 
 .found .card-front {
     border: 4px solid #28a745;
+}
+
+.wrong .card-front {
+    border: 4px solid #dc3545;
 }
 
 .caption {

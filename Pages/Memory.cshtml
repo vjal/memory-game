@@ -3,10 +3,10 @@
 @inject HttpClient Http
 @using Domain
 
-<div class="card-container container"> 
+<div class="card-container container-fluid"> 
 @foreach (var card in game.Cards)
 {
-    <div class="card @(!card.IsRevealed ? "flipped" : "") @(card.IsFound ? "found" : "")" onclick="@{() => OnClick(card)}">
+    <div class="card @(!card.IsRevealed ? "flipped" : "") @(card.IsFound ? "found" : "") @(card.State == CardState.Wrong ? "wrong" : "")" onclick="@{() => OnClick(card)}">
         <div class="card-front" style="background-image: url(@card.Url)"></div>
         <div class="card-back"></div>
     </div>
