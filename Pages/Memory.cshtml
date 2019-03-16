@@ -4,7 +4,7 @@
 @using Domain
 
 <div class="card-container container"> 
-@foreach (var card in cards)
+@foreach (var card in game.Cards)
 {
     <div class="card @(!card.IsRevealed ? "flipped" : "") @(card.IsFound ? "found" : "")" onclick="@{() => OnClick(card)}">
         <div class="card-front" style="background-image: url(@card.Url)"></div>
@@ -21,8 +21,7 @@
     protected string Keyword {get;set;}
 
     SearchResponse searchResponse = new SearchResponse();
-    List<Card> cards= new List<Card>();
-    MemoryGame game = new MemoryGame(new List<Card>());
+    MemoryGame game = new MemoryGame();
     int offset = 0;
 
     protected override async Task OnInitAsync()
@@ -34,42 +33,20 @@
     {
         var search = Keyword;
 
+        var limit = 100;
         var url = string.IsNullOrEmpty(search) 
-            ? $"http://api.giphy.com/v1/gifs/trending?api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}"
-            : $"http://api.giphy.com/v1/gifs/search?q={search}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&limit=8&offset={offset}";
+            ? $"http://api.giphy.com/v1/gifs/trending?limit={limit}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&offset={offset}"
+            : $"http://api.giphy.com/v1/gifs/search?q={search}&limit={limit}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&offset={offset}";
         searchResponse = await Http.GetJsonAsync<SearchResponse>(url);
-        cards.Clear();
+        var cards = new List<Card>();
         foreach(var gif in searchResponse.data)
         {
             cards.Add(new Card(gif.Image));
-            cards.Add(new Card(gif.Image));
         }
-        Shuffle(cards);
         game = new MemoryGame(cards);
-        game.OnWin += async (sender, ea) => {
-            offset += 8;
-            await Start();
-        };
     }
 
-    public void OnClick(Card card) 
-    {
-        game.Guess(card);
-    }
-
-    Random rng = new Random();  
-
-    public void Shuffle<T>(IList<T> list)  
-    {  
-        int n = list.Count;  
-        while (n > 1) {  
-            n--;  
-            int k = rng.Next(n + 1);  
-            T value = list[k];  
-            list[k] = list[n];  
-            list[n] = value;  
-        }  
-    }
+    public void OnClick(Card card) => game.Play(card);
 
     public class SearchResponse
     {

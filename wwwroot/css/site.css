@@ -139,7 +139,7 @@ app {
     margin: auto;
     background-position: center;
     display: inline-block;
-    transition: transform 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    transition: transform 0.5s ease;
     transform-style: preserve-3d;
     transform: scale(1);
     border: 0;

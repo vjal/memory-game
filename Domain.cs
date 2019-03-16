@@ -2,28 +2,65 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace Domain 
+namespace Domain
 {
-    public class MemoryGame 
+    public class MemoryGame
     {
-        List<Card> cards;
+        public List<Card> Deck { get; set; } = new List<Card>();
+        public List<Card> Cards { get; set; } = new List<Card>();
         Card firstGuess;
         Card secondGuess;
-        public event EventHandler OnWin;
+        Random random = new Random();
 
-        public MemoryGame(List<Card> cards)
+        public MemoryGame() {}
+
+        public MemoryGame(List<Card> deck)
         {
-            this.cards = cards;
+            Deck = deck;
+            Start();
         }
 
         public GameState State { get; private set; }
 
-        public void Guess(Card card) 
+        public void Start()
         {
-            if(State == GameState.Win)
-                OnWin(null, new EventArgs());
+            Cards = new List<Card>();
+            var deck = Deck.ToList();
+            for (var i = 0; i < 8; i++)
+            {
+                var index = random.Next(deck.Count - 1);
+                var randomCard = deck[index];
+                randomCard.State = CardState.Hidden;
+                Cards.Add(randomCard);
+                Cards.Add(randomCard.Copy());
+                deck.Remove(randomCard);
+            }
+            Shuffle(Cards);
+            State = GameState.GuessFirst;
+        }
 
-            if (State == GameState.GuessFirst && card.State == CardState.Hidden) 
+        public void Shuffle<T>(IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+
+
+        public void Play(Card card)
+        {
+            if (State == GameState.Win)
+            {
+                Start();
+            }
+
+            if (State == GameState.GuessFirst && card.State == CardState.Hidden)
             {
                 card.State = CardState.Open;
                 firstGuess = card;
@@ -31,7 +68,7 @@ namespace Domain
                 return;
             }
 
-            if (State == GameState.GuessSecond && card.State == CardState.Hidden) 
+            if (State == GameState.GuessSecond && card.State == CardState.Hidden)
             {
                 card.State = CardState.Open;
                 secondGuess = card;
@@ -40,7 +77,7 @@ namespace Domain
                     firstGuess.State = CardState.Found;
                     secondGuess.State = CardState.Found;
 
-                    if(HasWon()) 
+                    if (HasWon())
                     {
                         State = GameState.Win;
                         return;
@@ -54,7 +91,7 @@ namespace Domain
                 return;
             }
 
-            if (State == GameState.Continue) 
+            if (State == GameState.Continue)
             {
 
                 firstGuess.State = CardState.Hidden;
@@ -64,10 +101,11 @@ namespace Domain
             }
         }
 
-        bool HasWon() => cards.All(c => c.IsFound);
+        bool HasWon() => Cards.All(c => c.IsFound);
     }
-    
-    public enum GameState {
+
+    public enum GameState
+    {
         GuessFirst,
         GuessSecond,
         Continue,
@@ -75,10 +113,10 @@ namespace Domain
         Lose
     }
 
-    public class Card 
+    public class Card
     {
         public string Url { get; set; }
-        public CardState State{ get;set; } = CardState.Hidden;
+        public CardState State { get; set; } = CardState.Hidden;
         public Card(string url)
         {
             Url = url;
@@ -86,9 +124,13 @@ namespace Domain
 
         public bool IsRevealed => State == CardState.Open || State == CardState.Found;
         public bool IsFound => State == CardState.Found;
+        public Card Copy() => new Card(Url);
     }
 
-    public enum CardState {
+
+
+    public enum CardState
+    {
         Hidden,
         Open,
         Found
