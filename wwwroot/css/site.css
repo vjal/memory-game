@@ -131,6 +131,7 @@ app {
     margin-top: 50px;
     line-height: normal;
     max-width: 1200px;
+    padding: 0;
 }
 
 .card {
@@ -155,7 +156,6 @@ app {
     padding-bottom: 100%
 }
 .card.flipped {
-    transition: transform 0.5s ease;
     transform: rotateY(180deg) scale(.8);
 }
 
@@ -175,7 +175,6 @@ app {
 }
 
 .found, .wrong {
-    transition: transform 0.5s ease;
     transform: rotateY(0) scale(1);
 }
 
@@ -194,4 +193,6 @@ app {
     text-align: center;
     color: white;
 }
-
+.animated{
+    animation-fill-mode: initial;
+}
