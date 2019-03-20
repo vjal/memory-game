@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace Domain
 {
@@ -26,20 +26,20 @@ namespace Domain
         {
             Cards.Clear();
             var deck = Deck.ToList();
+            Shuffle(deck);
             for (var i = 0; i < 8; i++)
             {
-                var index = random.Next(deck.Count - 1);
-                var randomCard = deck[index];
-                randomCard.State = CardState.Hidden;
-                Cards.Add(randomCard);
-                Cards.Add(randomCard.Copy());
-                deck.Remove(randomCard);
+                var card = deck[i];
+                card.State = CardState.Hidden;
+                Cards.Add(card);
+                Cards.Add(card.Copy());
+                deck.Remove(card);
             }
-            Shuffle(Cards);
+
             State = GameState.GuessFirst;
         }
 
-        public void Shuffle<T>(IList<T> list)
+        void Shuffle<T>(IList<T> list)
         {
             int n = list.Count;
             while (n > 1)
@@ -51,7 +51,6 @@ namespace Domain
                 list[n] = value;
             }
         }
-
 
         public void Play(Card card)
         {
@@ -114,29 +113,5 @@ namespace Domain
         Continue,
         Win,
         Lose
-    }
-
-    public class Card
-    {
-        public string Url { get; set; }
-        public CardState State { get; set; } = CardState.Hidden;
-        public Card(string url)
-        {
-            Url = url;
-        }
-
-        public bool IsRevealed => State == CardState.Open || State == CardState.Found || State == CardState.Wrong;
-        public bool IsFound => State == CardState.Found;
-        public Card Copy() => new Card(Url);
-    }
-
-
-
-    public enum CardState
-    {
-        Hidden,
-        Open,
-        Wrong,
-        Found
     }
 }
