@@ -35,6 +35,7 @@ namespace Domain
                 Cards.Add(card.Copy());
                 deck.Remove(card);
             }
+            Shuffle(Cards);
 
             State = GameState.GuessFirst;
         }
@@ -54,12 +55,6 @@ namespace Domain
 
         public void Play(Card card)
         {
-            if (State == GameState.Win)
-            {
-                Start();
-                return;
-            }
-
             if (State == GameState.GuessFirst && card.State == CardState.Hidden)
             {
                 card.State = CardState.Open;
@@ -72,7 +67,7 @@ namespace Domain
             {
                 card.State = CardState.Open;
                 secondGuess = card;
-                if (firstGuess.Url == secondGuess.Url)
+                if (firstGuess.Matches(secondGuess))
                 {
                     firstGuess.State = CardState.Found;
                     secondGuess.State = CardState.Found;
@@ -82,7 +77,6 @@ namespace Domain
                         State = GameState.Win;
                         return;
                     }
-
 
                     State = GameState.GuessFirst;
                     return;
@@ -95,10 +89,15 @@ namespace Domain
 
             if (State == GameState.Continue)
             {
-
                 firstGuess.State = CardState.Hidden;
                 secondGuess.State = CardState.Hidden;
                 State = GameState.GuessFirst;
+                return;
+            }
+
+            if (State == GameState.Win)
+            {
+                Start();
                 return;
             }
         }

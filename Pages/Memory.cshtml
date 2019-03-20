@@ -2,6 +2,7 @@
 @page "/{keyword}"
 @inject HttpClient Http
 @using Domain
+@using Services
 
 <div class="card-container container-fluid"> 
 @foreach (var card in game.Cards)
@@ -11,8 +12,6 @@
         <div class="card-back"></div>
     </div>
 }
-
-
 </div>
 
 @functions {
@@ -20,47 +19,24 @@
     [Parameter]
     protected string Keyword {get;set;}
 
-    SearchResponse searchResponse = new SearchResponse();
     MemoryGame game = new MemoryGame();
+    CardService cardService;
     int offset = 0;
 
     protected override async Task OnInitAsync()
     {
+        cardService = new CardService(Http);
         await Start();
     }
 
     public async Task Start()
     {
-        var search = Keyword;
-
-        var limit = 100;
-        var url = string.IsNullOrEmpty(search) 
-            ? $"http://api.giphy.com/v1/gifs/trending?limit={limit}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&offset={offset}"
-            : $"http://api.giphy.com/v1/gifs/search?q={search}&limit={limit}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&offset={offset}";
-        searchResponse = await Http.GetJsonAsync<SearchResponse>(url);
         var cards = new List<Card>();
-        foreach(var gif in searchResponse.data)
-        {
-            cards.Add(new Card(gif.Image));
-        }
+        cards = await cardService.GetCards(Keyword);
         game = new MemoryGame(cards);
     }
 
     public void OnClick(Card card) => game.Play(card);
 
-    public class SearchResponse
-    {
-        public Gif[] data { get; set; } = new Gif[]{};
-    }
 
-    public class Gif 
-    {
-        public string Url {get;set;}
-        public Dictionary<string, Image> Images {get;set;} = new Dictionary<string, Image>{};
-        public string Image => Images["fixed_height"]?.Url ?? "";
-    }
-
-    public class Image {
-        public string Url {get;set;}
-    }
 }

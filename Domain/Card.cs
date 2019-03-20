@@ -12,6 +12,7 @@ namespace Domain
         public bool IsRevealed => State == CardState.Open || State == CardState.Found || State == CardState.Wrong;
         public bool IsFound => State == CardState.Found;
         public Card Copy() => new Card(Url);
+        public bool Matches(Card card) => this.Url == card.Url;
     }
 
     public enum CardState
