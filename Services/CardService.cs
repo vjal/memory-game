@@ -14,7 +14,7 @@ namespace Services
         }
         public async Task<List<Card>> GetCards(string keyword)
         {
-            var limit = 100;
+            var limit = 50;
             var url = string.IsNullOrEmpty(keyword) 
                 ? $"http://api.giphy.com/v1/gifs/trending?limit={limit}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&offset={offset}"
                 : $"http://api.giphy.com/v1/gifs/search?q={keyword}&limit={limit}&api_key=GDFJUI7emQX0Sxy9KDREeurBI77Symzr&offset={offset}";
@@ -24,6 +24,7 @@ namespace Services
             {
                 cards.Add(new Card(gif.Image));
             }
+            offset += 32;
             return cards;
         }
     }

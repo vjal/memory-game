@@ -157,7 +157,7 @@ app {
     padding-bottom: 100%
 }
 .card.flipped {
-    transform: rotateY(180deg) scale(.8);
+    transform: rotateY(180deg) scale(.7);
 }
 
 .card-front, .card-back {
@@ -181,11 +181,11 @@ app {
 }
 
 .found .card-front {
-    border: 2px solid #28a745;
+    border: 3px solid #28a745;
 }
 
 .wrong .card-front {
-    border: 2px solid #dc3545;
+    border: 3px solid #dc3545;
 }
 
 .caption {

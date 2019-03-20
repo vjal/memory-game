@@ -8,8 +8,8 @@ namespace Domain
     {
         public List<Card> Deck { get; set; } = new List<Card>();
         public List<Card> Cards { get; set; } = new List<Card>();
-        Card firstGuess;
-        Card secondGuess;
+        Card firstGuess = new Card();
+        Card secondGuess = new Card();
         Random random = new Random();
 
         public MemoryGame() {}
@@ -40,21 +40,14 @@ namespace Domain
             State = GameState.GuessFirst;
         }
 
-        void Shuffle<T>(IList<T> list)
-        {
-            int n = list.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = random.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
-        }
-
         public void Play(Card card)
         {
+            if(firstGuess != null && firstGuess.IsFound)
+                firstGuess.State = CardState.Open;
+
+            if(secondGuess != null && secondGuess.IsFound)
+                secondGuess.State = CardState.Open;
+
             if (State == GameState.GuessFirst && card.State == CardState.Hidden)
             {
                 card.State = CardState.Open;
@@ -102,7 +95,20 @@ namespace Domain
             }
         }
 
-        bool HasWon() => Cards.All(c => c.IsFound);
+        bool HasWon() => Cards.All(c => c.IsRevealed);
+
+        void Shuffle<T>(IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
     }
 
     public enum GameState

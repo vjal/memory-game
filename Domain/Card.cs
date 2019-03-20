@@ -4,6 +4,7 @@ namespace Domain
     {
         public string Url { get; set; }
         public CardState State { get; set; } = CardState.Hidden;
+        public Card() {}
         public Card(string url)
         {
             Url = url;
