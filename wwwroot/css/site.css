@@ -142,7 +142,7 @@ app {
     margin: auto;
     background-position: center;
     display: inline-block;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s cubic-bezier(.09,.95,.46,1.18);
     transform-style: preserve-3d;
     transform: scale(1);
     border: 0;
@@ -197,4 +197,11 @@ app {
 }
 .animated{
     animation-fill-mode: initial;
+}
+
+.spinner {
+    color: lightgrey;
+    font-size: 100px;
+    margin: auto;
+    margin-top: 20%;
 }
