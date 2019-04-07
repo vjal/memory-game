@@ -21,22 +21,13 @@
 
     MemoryGame game = new MemoryGame();
     CardService cardService;
-    int offset = 0;
 
     protected override async Task OnInitAsync()
     {
         cardService = new CardService(Http);
-        await Start();
+        game = new MemoryGame(cardService, Keyword);
+        await game.Start();
     }
 
-    public async Task Start()
-    {
-        var cards = new List<Card>();
-        cards = await cardService.GetCards(Keyword);
-        game = new MemoryGame(cards);
-    }
-
-    public void OnClick(Card card) => game.Play(card);
-
-
+    public async Task OnClick(Card card) => await game.Play(card);
 }

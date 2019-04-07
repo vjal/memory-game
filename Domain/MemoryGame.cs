@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Domain
 {
@@ -11,36 +12,37 @@ namespace Domain
         Card firstGuess = new Card();
         Card secondGuess = new Card();
         Random random = new Random();
-
+        ICardService cardService;
+        string keyword;
         public MemoryGame() {}
-
-        public MemoryGame(List<Card> deck)
+        public MemoryGame(ICardService cardService, string keyword)
         {
-            Deck = deck;
-            Start();
+            this.cardService = cardService;
+            this.keyword = keyword;
         }
 
         public GameState State { get; private set; }
 
-        public void Start()
+        public async Task Start()
         {
+            var cards = await cardService.GetCards(keyword);
+            Deck.AddRange(cards);
             Cards.Clear();
-            var deck = Deck.ToList();
-            Shuffle(deck);
+            Shuffle(Deck);
             for (var i = 0; i < 8; i++)
             {
-                var card = deck[i];
+                var card = Deck[i];
                 card.State = CardState.Hidden;
                 Cards.Add(card);
                 Cards.Add(card.Copy());
-                deck.Remove(card);
+                Deck.Remove(card);
             }
             Shuffle(Cards);
 
             State = GameState.GuessFirst;
         }
 
-        public void Play(Card card)
+        public async Task Play(Card card)
         {
             if(firstGuess != null && firstGuess.IsFound)
                 firstGuess.State = CardState.Open;
@@ -60,6 +62,7 @@ namespace Domain
             {
                 card.State = CardState.Open;
                 secondGuess = card;
+                
                 if (firstGuess.Matches(secondGuess))
                 {
                     firstGuess.State = CardState.Found;
@@ -74,6 +77,7 @@ namespace Domain
                     State = GameState.GuessFirst;
                     return;
                 }
+
                 firstGuess.State = CardState.Wrong;
                 secondGuess.State = CardState.Wrong;
                 State = GameState.Continue;
@@ -90,7 +94,7 @@ namespace Domain
 
             if (State == GameState.Win)
             {
-                Start();
+                await Start();
                 return;
             }
         }
