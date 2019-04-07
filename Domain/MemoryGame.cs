@@ -14,7 +14,7 @@ namespace Domain
         Random random = new Random();
         ICardService cardService;
         string keyword;
-        public MemoryGame() {}
+        public MemoryGame() { }
         public MemoryGame(ICardService cardService, string keyword)
         {
             this.cardService = cardService;
@@ -44,10 +44,10 @@ namespace Domain
 
         public async Task Play(Card card)
         {
-            if(firstGuess != null && firstGuess.IsFound)
+            if (firstGuess != null && firstGuess.IsFound)
                 firstGuess.State = CardState.Open;
 
-            if(secondGuess != null && secondGuess.IsFound)
+            if (secondGuess != null && secondGuess.IsFound)
                 secondGuess.State = CardState.Open;
 
             if (State == GameState.GuessFirst && card.State == CardState.Hidden)
@@ -62,7 +62,7 @@ namespace Domain
             {
                 card.State = CardState.Open;
                 secondGuess = card;
-                
+
                 if (firstGuess.Matches(secondGuess))
                 {
                     firstGuess.State = CardState.Found;
@@ -88,6 +88,14 @@ namespace Domain
             {
                 firstGuess.State = CardState.Hidden;
                 secondGuess.State = CardState.Hidden;
+                if (card != firstGuess && card != secondGuess)
+                {
+                    card.State = CardState.Open;
+                    firstGuess = card;
+                    State = GameState.GuessSecond;
+                    return;
+                }
+
                 State = GameState.GuessFirst;
                 return;
             }
